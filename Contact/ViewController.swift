@@ -24,9 +24,8 @@ class ViewController: UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "создать контакт", style: .done, target: self, action: #selector(showNewContactAlert))
+
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .done, target: self, action: #selector(showNewContactAlert))
         
         setupUI()
         
@@ -52,7 +51,7 @@ class ViewController: UIViewController{
     }
     
     @objc func showNewContactAlert() {
-        let alertController = UIAlertController(title: "Создать новый контакт", message: "введите имя и тедлефон", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Создать контакт", message: "Введите имя и телефон", preferredStyle: .alert)
         
         alertController.addTextField() { textfield in
             textfield.placeholder = "Имя"
@@ -63,7 +62,7 @@ class ViewController: UIViewController{
                 
             }
         
-        let createButton = UIAlertAction(title: "создать", style: .default, handler: { _ in
+        let createButton = UIAlertAction(title: "Cоздать", style: .default, handler: { _ in
             guard let contactName = alertController.textFields?[0].text,
                   let contactPhone = alertController.textFields?[1].text else {
                 return
@@ -115,6 +114,7 @@ extension ViewController: UITableViewDataSource {
    
 }
 extension ViewController: UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         // действие удаления
         let actionDelete = UIContextualAction(style: .destructive, title: "Удалить") { _,_,_ in
