@@ -13,6 +13,8 @@ protocol ContactProtocol {
     var number: String {get set}
 }
 
+
+
 struct Contact: ContactProtocol {
     var title: String
     var number: String

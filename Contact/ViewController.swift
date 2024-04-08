@@ -25,32 +25,38 @@ class ViewController: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
        
-       
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "MyCell")
-        tableView.isHidden = true
-        tableView.backgroundColor = .green
-        
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "создать контакт", style: .done, target: self, action: #selector(showNewContactAlert))
+        
+        setupUI()
         
         storage = ContactStorage() as ContactStorageProtocol
         loadContacts()
     }
     
-  
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.frame = view.bounds
+    }
+
+    private func setupUI() {
+        view.addSubview(tableView)
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "MyCell")
+       
+    }
     
     private func loadContacts() {
         contacts = storage.load()
     }
     
-    
     @objc func showNewContactAlert() {
         let alertController = UIAlertController(title: "Создать новый контакт", message: "введите имя и тедлефон", preferredStyle: .alert)
         
         alertController.addTextField() { textfield in
-            textfield.placeholder = "имя"
+            textfield.placeholder = "Имя"
+
         }
             alertController.addTextField() { textfield in
                 textfield.placeholder = "Номер телефона"
@@ -78,10 +84,20 @@ class ViewController: UIViewController{
                 // отображаем Alert Controller
                 self.present(alertController, animated: true, completion: nil)
     }
+    
+    
+    private func configure(cell: inout UITableViewCell, for indexPath: IndexPath) {
+           var configuration = cell.defaultContentConfiguration()
+           // имя контакта
+           configuration.text = contacts[indexPath.row].title
+           // номер телефона контакта
+        configuration.secondaryText = contacts[indexPath.row].number
+           cell.contentConfiguration = configuration
+       }
 }
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-           return 3
+        return contacts.count
        }
        
        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -96,15 +112,7 @@ extension ViewController: UITableViewDataSource {
            configure(cell: &cell, for: indexPath)
            return cell
        }
-    
-    private func configure(cell: inout UITableViewCell, for indexPath: IndexPath) {
-           var configuration = cell.defaultContentConfiguration()
-           // имя контакта
-           configuration.text = contacts[indexPath.row].title
-           // номер телефона контакта
-        configuration.secondaryText = contacts[indexPath.row].number
-           cell.contentConfiguration = configuration
-       }
+   
 }
 extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
